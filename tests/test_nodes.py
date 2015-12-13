@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, absolute_import, unicode_literals
+from builtins import str
 
 from unittest import TestCase
 from collections import namedtuple
@@ -20,15 +21,15 @@ class TestExpr(TestCase):
         self.assertIs(None, nodes.LiteralNull().ex({}))
 
         self.assertRegexpMatches(
-            unicode(nodes.LiteralTrue()),
+            str(nodes.LiteralTrue()),
             r'<LiteralTrue at 0x[\da-f]+> val:True',
         )
         self.assertRegexpMatches(
-            unicode(nodes.LiteralFalse()),
+            str(nodes.LiteralFalse()),
             r'<LiteralFalse at 0x[\da-f]+> val:False',
         )
         self.assertRegexpMatches(
-            unicode(nodes.LiteralNull()),
+            str(nodes.LiteralNull()),
             r'<LiteralNull at 0x[\da-f]+> val:None',
         )
 

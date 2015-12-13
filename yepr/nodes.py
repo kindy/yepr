@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, absolute_import, unicode_literals
+from future.utils import with_metaclass
+
+from builtins import str
+from builtins import object
 
 from sys import version_info
 import re
@@ -32,7 +36,7 @@ class TokenMeta(type):
 
         _tokens = {}
         # Add all attributes to the class.
-        for obj_name, obj in attrs.items():
+        for obj_name, obj in list(attrs.items()):
             if isinstance(obj, Token):
                 obj.p = new_class   # for output token's base
                 for txt in [obj.txt] + obj.alias:
@@ -47,14 +51,12 @@ class TokenMeta(type):
         return new_class
 
 
-class Token(Base):
+class Token(with_metaclass(TokenMeta, Base)):
     # class var {{{
     _next_id = 1
     _token_map = {}
     _tokens = None        # per sub class
     # }}}
-
-    __metaclass__ = TokenMeta
 
     def __init__(self, txt, *alias, **kwargs):
         id = Token._next_id
@@ -205,7 +207,7 @@ class UnaryExp(Exp):
 
     def ast_prop(self):
         return {
-            '$op': unicode(self.op),
+            '$op': str(self.op),
             'exp': self.exp.ast(),
         }
 
@@ -264,7 +266,7 @@ class BinaryExp(Node):
 
     def ast_prop(self):
         return {
-            '$op': unicode(self.op),
+            '$op': str(self.op),
             'l': self.l.ast(),
             'r': self.r.ast(),
         }

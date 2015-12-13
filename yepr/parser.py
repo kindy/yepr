@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, absolute_import, unicode_literals
 
+from builtins import object
 from .yep_grako import yepParser
 from .nodes import YepSemantics
 

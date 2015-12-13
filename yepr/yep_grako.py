@@ -12,12 +12,13 @@
 
 
 from __future__ import print_function, division, absolute_import, unicode_literals
+from builtins import object
 
 from grako.parsing import graken, Parser
 from grako.util import re, RE_FLAGS
 
 
-__version__ = (2015, 12, 13, 10, 41, 1, 6)
+__version__ = (2015, 12, 13, 14, 46, 59, 6)
 
 __all__ = [
     'yepParser',
