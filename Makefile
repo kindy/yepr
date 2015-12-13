@@ -7,5 +7,5 @@ test: yepr/yep_grako.py
 	nosetests
 
 ci-test:
-	nosetests
+	nosetests --with-coverage --cover-package=yepr
 
