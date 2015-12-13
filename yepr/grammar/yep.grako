@@ -1,0 +1,133 @@
+
+yep
+    = expression $
+    ;
+
+expression
+    = conditional_expression
+    ;
+
+conditional_expression
+    = cond:logical_or_expression [val:('?' yes:expression ':' no:conditional_expression)]
+    ;
+
+logical_or_expression
+    = l:logical_and_expression {op_and_r+:(OP_OR logical_and_expression)}
+    ;
+
+logical_and_expression
+    = l:equality_expression {op_and_r+:(OP_AND equality_expression)}
+    ;
+
+equality_expression
+    = l:relational_expression {op_and_r+:(OP_EQ relational_expression)}
+    ;
+
+relational_expression
+    = l:unary_expression {op_and_r+:(OP_BINARY unary_expression)}
+    ;
+
+unary_expression
+    = op:OP_UNARY op_exp:unary_expression
+    | exp:primary_expression
+    ;
+
+# = IDENTIFIER
+primary_expression
+    = constant
+    | '(' @:expression ')' ;
+
+constant
+    = number
+    | string
+    ;
+
+number
+    = /\d+/
+    ;
+
+string
+    = simple_string
+    | quoted_string
+    ;
+
+simple_string
+    = !KW @:/[A-Za-z_](?:[A-Za-z_0-9.-]*[A-Za-z_])?/
+    ;
+
+quoted_string
+    = /"/ @:/[^"\\]*(?:\\.[^"\\]*)*/ /"/
+    | /'/ @:/[^'\\]*(?:\\.[^'\\]*)*/ /'/
+    ;
+
+OP_UNARY
+    = '!' | @:'not' /\b/    (* logic not *)
+    | '+'
+    | '-'       (* negative *)
+    | '#'       (* length *)
+    ;
+
+OP_OR
+    = @:'or' /\b/
+    | '||'
+    ;
+
+OP_AND
+    = @:'and' /\b/
+    | '&&'
+    ;
+
+OP_BINARY
+    = '<='  | @:'le' /\b/
+    | '<'   | @:'lt' /\b/
+    | '>='  | @:'ge' /\b/
+    | '>'   | @:'gt' /\b/
+    | @:'in' /\b/
+    | @:('not' / +/ 'in') /\b/
+    ;
+
+(* not support yet *)
+OP_ASGN
+    = ':='
+    ;
+
+OP_EQ
+    = '=='  | @:'eq' /\b/
+    | '!='  | @:'ne' /\b/
+
+    | '=~'              (* regex match *)
+    | '!~'              (* regex not match *)
+
+    | @:'isa' /\b/      (* type check *)
+    | @:('is' / +/ 'not') /\b/
+    | @:'is' /\b/       (* type & value match *)
+    ;
+
+KW
+    = (
+          'return'
+        | 'def' | 'sub' | 'func'
+        | 'do' | 'end'
+        | 'if' | 'elif' | 'else'
+        | 'for' | 'while' | 'repeat' | 'until'
+        | 'next' | 'break' | 'continue'
+        | 'var' | 'goto' | 'with'
+
+        | 'true' | 'false' | 'nil' | 'null' | 'undef'
+
+        | 'not'
+        | 'and'
+        | 'or'
+        | 'isa'
+        | 'is'
+        | 'in'
+        | 'eq'  | 'ne'
+        | 'gt'  | 'ge'
+        | 'lt'  | 'le'
+    ) /\b/
+    ;
+
+WS
+    = /\s+/
+    ;
+
